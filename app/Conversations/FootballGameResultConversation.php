@@ -34,16 +34,24 @@ class FootBallGameResultConversation extends Conversation {
           $this->typeOfResult = $answer->getValue();
 
           if($this->typeOfResult == "Ceux d'une équipe" || $this->typeOfResult == "TEAM"){
-            $this->ask("Quelle équipe vous intéresse ?", function(Answer $answer) {
-              $this->submittedTeam = $answer->getText();
-              $teams = App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams($this->submittedTeam);
-              $this->selectedTeam = $teams[0];
-              $this->replyTeamLastResults($this->selectedTeam);
-            });
-
+            $this->askForTeamName();
           }else if($this->typeOfResult == "Dernière journée" || $this->typeOfResult == "LAST_DAY"){
             $this->replyLastDayResults();
           }
+      });
+    }
+
+    public function askForTeamName(){
+      $this->ask("Quelle équipe vous intéresse ?", function(Answer $answer) {
+        $this->submittedTeam = $answer->getText();
+        $teams = App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams($this->submittedTeam);
+        if(isset($teams[0])){
+          $this->selectedTeam = $teams[0];
+          $this->replyTeamLastResults($this->selectedTeam);
+        }else{
+          $this->say("Je ne connais pas cette équipe.");
+          $this->askForTeamName();
+        }
       });
     }
 
