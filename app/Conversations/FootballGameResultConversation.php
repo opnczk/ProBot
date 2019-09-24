@@ -83,7 +83,7 @@ class FootBallGameResultConversation extends Conversation {
 
   public function run()
   {
-      $this->replyLastDayResults();
-      //$this->askTypeResult();
+      //$this->replyLastDayResults();
+      $this->askTypeResult();
   }
 }
