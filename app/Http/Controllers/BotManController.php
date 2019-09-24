@@ -18,11 +18,11 @@ class BotManController extends Controller
         $botman = app('botman');
         App::make('App\Services\FootballResultsService')->fetchResultsFromLFPwebsite(true);
 
-        //$botman->hears('{message}', function($botman, $message) {
-          //$botman->startConversation(new FootballGameResultConversation);
-        //});
+        $botman->hears('{message}', function($botman, $message) {
+          $botman->startConversation(new FootballGameResultConversation);
+        });
 
-        //$botman->listen();
+        $botman->listen();
     }
 
     /**
