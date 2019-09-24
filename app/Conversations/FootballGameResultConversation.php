@@ -34,8 +34,9 @@ class FootBallGameResultConversation extends Conversation {
           $this->typeOfResult = $answer->getValue();
 
           if($this->typeOfResult == "Ceux d'une équipe" || $this->typeOfResult == "TEAM"){
-            $this->ask("Quelle équipe vous intéresse", function(Answer $answer) {
-              $teams = App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams($answer->getText());
+            $this->ask("Quelle équipe vous intéresse ?", function(Answer $answer) {
+              $this->submittedTeam = $answer->getText();
+              $teams = App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams($this->submittedTeam);
               $this->selectedTeam = $teams[0];
               $this->replyTeamLastResults($this->selectedTeam);
             });

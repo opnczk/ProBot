@@ -12,6 +12,7 @@
 */
 
 Route::get('/', function () {
+    dump(\App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams("paris saint-germain"));
     return view('welcome');
 });
 
