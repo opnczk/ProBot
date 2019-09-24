@@ -10,6 +10,8 @@ use BotMan\Drivers\Facebook\Extensions\ButtonTemplate;
 use BotMan\Drivers\Facebook\Extensions\GenericTemplate;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
 
+use  BotMan\BotMan\Messages\Incoming\Answer;
+
 
 class FootBallGameResultConversation extends Conversation {
   protected $typeOfResult;
