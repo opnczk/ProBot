@@ -22,7 +22,7 @@ class FootballResultsService {
         $seasons = [max($seasons)];
       }
 
-      if((new Carbon(FootballGameResult::max('updated_at')))->diffInHours(Carbon::now()) < 24 ){
+      if(boolval(FootballGameResult::count()) && (new Carbon(FootballGameResult::max('updated_at')))->diffInHours(Carbon::now()) < 24 ){
         return;
       }
 

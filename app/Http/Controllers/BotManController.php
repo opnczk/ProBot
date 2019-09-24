@@ -21,7 +21,7 @@ class BotManController extends Controller
         $botman->hears('{message}', function($botman, $message) {
           $botman->startConversation(new FootballGameResultConversation);
         });
-
+        
         $botman->listen();
     }
 
