@@ -46,6 +46,8 @@ class FootBallGameResultConversation extends Conversation {
         $this->submittedTeam = $answer->getText();
         $teams = App::make('App\Repositories\FootballGameResultRepository')->checkMessageForTeams($this->submittedTeam);
         if(isset($teams[0])){
+          // Méthode de choix plus que rudimentaire mais éfficace lorsque plusieurs équipes sont présentes dans les résultats
+          // On pourrait ajouter une étape avec une ListTemplate et des call to action pour rendre la chose plus sympathique
           $this->selectedTeam = $teams[0];
           $this->replyTeamLastResults($this->selectedTeam);
         }else{
@@ -82,7 +84,10 @@ class FootBallGameResultConversation extends Conversation {
     }
 
     public function sayElements($elements){
-      $template = ListTemplate::create()->useCompactView();
+      // function utilitaire permettant d'éviter de dupliquer du code et de pouvoir tester les limites.
+      // j'aurais préféré utiliser un GenericTemplate ou une ListTemplate, mais après essaie, la limite était trop petite pour afficher les résultats de toute une journée de compétition, donc je suis parti sur des messages
+
+      //$template = ListTemplate::create()->useCompactView();
       foreach ($elements as $element) {
         $this->say($element);
         //$template->addElement(Element::create($element));
@@ -94,7 +99,7 @@ class FootBallGameResultConversation extends Conversation {
 
   public function run()
   {
-      //$this->replyLastDayResults();
+      // la logique décrite dans la conversation est relativement simple et verbeuse, mais n'hésite pas à me poser des questions si quelque chose te semble obscur
       $this->askTypeResult();
   }
 }

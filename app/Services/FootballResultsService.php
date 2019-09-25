@@ -1,4 +1,11 @@
 <?php
+/**
+* Service permettant de récupérer les résultats de la ligue 1 sur le site LFP.fr
+* Cette classe peut facilement être transformée pour récupérer les résultats d'autre ligues et ainsi ajouter la possibilité de les avoirs dans le bot.
+* La seule limite à celà est le manque de l'information "ligue" dans le modèle FootBallGameResult (i.e. leagueId ou LeagueName)
+**/
+
+
 namespace App\Services;
 
 use KubAT\PhpSimple\HtmlDomParser;
@@ -11,10 +18,12 @@ class FootballResultsService {
     public $urlLeagueName = "ligue1";
 
     public function fetchResultsFromLFPwebsite( $lastSeasonOnly = null){
+      //celà peut prendre potentiellement du temps ou de la place en mémoire, en fonction de la manière dont on appelle cette méthode
       ini_set("memory_limit", "1536M");
       ini_set('max_execution_time', 0);
       set_time_limit(0);
 
+      //on récupère les id des saisons
       $html = file_get_contents('https://www.lfp.fr/'.$this->urlLeagueName.'/calendrier_resultat');
       $seasons = array_column(HtmlDomParser::str_get_html($html)->find('#saison > option'), "value");
 
@@ -29,7 +38,7 @@ class FootballResultsService {
       $allTheGames = array();
       foreach($seasons as $seasonId){
         if(boolval(FootballGameResult::where('seasonId', $seasonId)->count()) && !boolval(FootballGameResult::where('seasonId', $seasonId)->where('results', "")->count())){
-          //there nothing to fetch for this season
+          //on peut s'éviter quelques appels lorsque la saison est complete. Il y a peut de chances que les résultats ou les données d'une saison passée changent
           continue;
         }
         $seasonGames = $this->fetchWholeSeasonFromSeasonId($this->urlLeagueName, $seasonId);
@@ -47,6 +56,7 @@ class FootballResultsService {
 
       foreach ($daysIds as $dayId) {
         if(FootballGameResult::where('seasonId', $seasonId)->where('dayId', $dayId)->count() != 0 && FootballGameResult::where('seasonId', $seasonId)->where('dayId', $dayId)->where('results', "")->count() == 0){
+          //idem mais à l'échelle d'une journée de rencontres
           continue;
         }
 

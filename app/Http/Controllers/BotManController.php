@@ -16,12 +16,16 @@ class BotManController extends Controller
     public function handle()
     {
         $botman = app('botman');
+        // Appel a un service pour mettre à jour les resultats
+        // J'ai crée ce service car je n'ai pas trouvé d'API ou de dataset avec des résultats récents.
         App::make('App\Services\FootballResultsService')->fetchResultsFromLFPwebsite(true);
 
         $botman->hears('{message}', function($botman, $message) {
+          //j'ai préféré utiliser un déclencheur de conversation très libre, j'aurai aussi pu créer un menu persistent avec addPersistentMenu
+          // par ailleurs, encapsuler toute la logique du bot dans une classe dérivée de conversation me semblait pertinent, même pour une logique si simple
           $botman->startConversation(new FootballGameResultConversation);
         });
-        
+
         $botman->listen();
     }
 
